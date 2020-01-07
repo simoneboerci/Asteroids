@@ -3,9 +3,14 @@ guid: 745c7c345023e2340b4e45a6cd98e3c8
 ModelImporter:
   serializedVersion: 19300
   internalIDToNameTable: []
-  externalObjects: {}
+  externalObjects:
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: Asteroid_LP
+    second: {fileID: 2100000, guid: 0a83562084431dc47916ca6a0429980f, type: 2}
   materials:
-    materialImportMode: 0
+    materialImportMode: 1
     materialName: 0
     materialSearch: 1
     materialLocation: 1

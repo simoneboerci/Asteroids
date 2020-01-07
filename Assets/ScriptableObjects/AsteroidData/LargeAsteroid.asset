@@ -1,0 +1,27 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 41c173489b42d0149b4e12755f24c34c, type: 3}
+  m_Name: LargeAsteroid
+  m_EditorClassIdentifier: 
+  Index: 0
+  Mesh: {fileID: 7499713625062947425, guid: 745c7c345023e2340b4e45a6cd98e3c8, type: 3}
+  Material: {fileID: 2100000, guid: 0a83562084431dc47916ca6a0429980f, type: 2}
+  MinSize: 0.3
+  MaxSize: 1
+  ColliderCenter: {x: 0.04, y: 0, z: 0.03}
+  ColliderRadius: 0.9
+  ColliderHeight: 1
+  ColliderDirection: 1
+  Mass: 100000
+  Life: 100
+  MaxMovementSpeed: 10000000
+  MaxRotationSpeed: 1000000

@@ -4,15 +4,10 @@ using UnityEngine;
 
 [RequireComponent(typeof(CapsuleCollider))]
 [RequireComponent(typeof(Rigidbody))]
-public class Asteroid : MonoBehaviour
+public class Bullet : MonoBehaviour
 {
     [HideInInspector]
-    public AsteroidData Data;
-
-    private int _life;
-
-    [HideInInspector]
-    public Vector3 InitialDirection;
+    public BulletData Data;
 
     private Rigidbody _rb;
 
@@ -34,8 +29,6 @@ public class Asteroid : MonoBehaviour
         ExtractGraphicsData();
         ExtractColliderData();
         ExtractPhysicsData();
-
-        _life = Data.Life;
     }
 
     private void ExtractGraphicsData()
@@ -48,9 +41,7 @@ public class Asteroid : MonoBehaviour
         _meshFilter.mesh = Data.Mesh;
         _meshRenderer.material = Data.Material;
 
-        float _scale = Random.Range(Data.MinSize, Data.MaxSize);
-
-        transform.localScale = new Vector3(_scale, _scale, _scale);
+        transform.localScale = new Vector3(0.1f, 0.1f, 0.1f); //TEMP
     }
 
     private void ExtractColliderData()
@@ -71,30 +62,14 @@ public class Asteroid : MonoBehaviour
 
     private void Start()
     {
-        Vector3 _rotationSpeed = Vector3.up * Random.Range(-Data.MaxRotationSpeed, Data.MaxRotationSpeed);
-
-        float _movementSpeed = Random.Range(Data.MaxMovementSpeed / 100 * 50, Data.MaxMovementSpeed);
-        Vector3 _force = InitialDirection * _movementSpeed;
-
-        _rb.AddForce(_force);
-        _rb.AddTorque(_rotationSpeed);
+        _rb.AddForce(transform.forward * Data.MovementSpeed);
     }
+
     #endregion
 
     private void OnCollisionEnter(Collision collision)
     {
-        if (collision.gameObject.CompareTag("Border"))
-        {
-            Die();
-        }
-
-        if (collision.gameObject.CompareTag("Bullet"))
-        {
-            if (_life > 0)
-                _life -= collision.gameObject.GetComponent<Bullet>().Data.Damage;
-            else
-                Die();
-        }
+        Die();
     }
 
     private void Die()
