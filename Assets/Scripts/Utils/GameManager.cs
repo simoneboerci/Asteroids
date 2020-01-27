@@ -93,7 +93,7 @@ public class GameManager : MonoBehaviour
         GameObject _asteroid = AsteroidPrefab;
         Asteroid _asteroidScript = _asteroid.GetComponent<Asteroid>();
 
-        SetAsteroidData(_asteroidScript);
+        _asteroidScript.Data = GetAsteroidData();
 
         Transform _selectedBorder = GetRandomBorder();
 
@@ -102,9 +102,9 @@ public class GameManager : MonoBehaviour
         InstantiateAsteroid(_asteroid, _spawnPosition);
     }
 
-    private void SetAsteroidData(Asteroid asteroid)
+    public AsteroidData GetAsteroidData()
     {
-        asteroid.Data = AsteroidDataList[Random.Range(0, AsteroidDataList.Count)];
+        return AsteroidDataList[Random.Range(0, AsteroidDataList.Count)];
     }
 
     private Transform GetRandomBorder()

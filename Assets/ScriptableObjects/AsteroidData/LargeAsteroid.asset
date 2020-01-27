@@ -22,6 +22,8 @@ MonoBehaviour:
   ColliderHeight: 1
   ColliderDirection: 1
   Mass: 100000
-  Life: 100
+  Life: 300
+  Damage: 1
+  Score: 10
   MaxMovementSpeed: 10000000
   MaxRotationSpeed: 1000000

@@ -10,6 +10,7 @@ public class Asteroid : MonoBehaviour
     public AsteroidData Data;
 
     private int _life;
+    private bool _child;
 
     [HideInInspector]
     public Vector3 InitialDirection;
@@ -35,7 +36,8 @@ public class Asteroid : MonoBehaviour
         ExtractColliderData();
         ExtractPhysicsData();
 
-        _life = Data.Life;
+        if(!_child)
+            _life = Data.Life;
     }
 
     private void ExtractGraphicsData()
@@ -46,11 +48,13 @@ public class Asteroid : MonoBehaviour
         MeshRenderer _meshRenderer = _graphics.GetComponent<MeshRenderer>();
 
         _meshFilter.mesh = Data.Mesh;
-        _meshRenderer.material = Data.Material;
+        _meshRenderer.material = Data.Material;  
 
-        float _scale = Random.Range(Data.MinSize, Data.MaxSize);
-
-        transform.localScale = new Vector3(_scale, _scale, _scale);
+        if (!_child)
+        {
+            float _scale = Random.Range(Data.MinSize, Data.MaxSize);
+            transform.localScale = new Vector3(_scale, _scale, _scale);
+        }
     }
 
     private void ExtractColliderData()
@@ -87,7 +91,11 @@ public class Asteroid : MonoBehaviour
         {
             int _damage = collision.gameObject.GetComponent<Bullet>().Data.Damage;
             if (_life - _damage > 0)
+            {
                 _life -= _damage;
+                transform.localScale /= 2f;
+                SpawnMiniAsteroid(_damage); 
+            }
             else
             {
                 GameManager.instance.AddScore(this);
@@ -99,5 +107,21 @@ public class Asteroid : MonoBehaviour
     private void Die()
     {
         Destroy(this.gameObject);
+    }
+
+    private void SpawnMiniAsteroid(int damage)
+    {
+        GameObject _asteroid = GameManager.instance.AsteroidPrefab;
+        Asteroid _asteroidScript = _asteroid.GetComponent<Asteroid>();
+
+        _asteroidScript.Data = GameManager.instance.GetAsteroidData();
+
+        _asteroidScript.InitialDirection = transform.forward;
+
+        GameObject _child = Instantiate(_asteroid, transform.position, transform.rotation, GameManager.instance.AsteroidPool);
+
+        _child.GetComponent<Asteroid>()._child = true;
+        _child.transform.localScale = transform.localScale;
+        _child.GetComponent<Asteroid>()._life = _life;
     }
 }
