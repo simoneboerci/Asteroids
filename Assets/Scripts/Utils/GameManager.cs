@@ -1,10 +1,24 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using TMPro;
+using UnityEngine.Rendering.PostProcessing;
 
 public class GameManager : MonoBehaviour
 {
     public static GameManager instance;
+
+    [Header("PostProcessing")]
+    public PostProcessProfile DefaultPostProcess;
+    public PostProcessProfile PausePostProcess;
+    private PostProcessVolume _postProcessVolume;
+
+    [HideInInspector]
+    public bool Pause;
+    [HideInInspector]
+    public bool GameOverBool;
+
+    private int _score = 0;
 
     [Header("Borders")]
     public List<Transform> Borders;
@@ -13,15 +27,14 @@ public class GameManager : MonoBehaviour
     public Transform AsteroidPool;
 
     [Header("Player")]
-    private Player _player;
     public int SelectedPlayerIndex = 0;
     public List<PlayerData> PlayerDataList;
+    private Player _player;
 
     [Header("Asteroids")]
     public GameObject AsteroidPrefab;
     public float AsteroidSpawnRate;
-    private float _asteroidSpawnPositionOffset = 2;
-    private float _asteroidSpawnPositionMargin = 5;
+    public float BorderOffset = 2;
     private float _asteroidSpawnAngleMin = -1.5f;
     private float _asteroidSpawnAngleMax = 1.5f;
     public List<AsteroidData> AsteroidDataList;
@@ -37,14 +50,33 @@ public class GameManager : MonoBehaviour
         if (instance == null || instance != this)
             instance = this;
 
+        _postProcessVolume = FindObjectOfType<PostProcessVolume>();
+
+        _postProcessVolume.profile = DefaultPostProcess;
+
         _player = FindObjectOfType<Player>();
         _player.Data = PlayerDataList[SelectedPlayerIndex];
+
+        UIManager.instance.CreatingLives(_player.Data.Life);
+
+        GameOverBool = false;
     }
     #endregion
 
     #region Update
     private void Update()
     {
+        if (Input.GetKeyDown(KeyCode.Escape) || Input.GetKeyDown(KeyCode.P))
+        {
+            if (Pause)
+                ResumeGame();
+            else
+                PauseGame();
+        }
+
+        if (Pause || GameOverBool)
+            return;
+
         _time += Time.deltaTime;
 
         if(_time >= AsteroidSpawnRate)
@@ -84,42 +116,88 @@ public class GameManager : MonoBehaviour
 
     private Vector3 CalculateSpawnPosition(Transform selectedBorder, Asteroid asteroid)
     {
-        Vector3 _spwanPositionOffset = Vector3.zero;
+        Vector3 _spawnPositionOffset = Vector3.zero;
         Vector3 _direction = Vector3.zero;
-        float _angleOffset = Random.Range(_asteroidSpawnAngleMin, _asteroidSpawnAngleMax);
         Vector3 _directionOffset = Vector3.zero;
+        float _angleOffset = Random.Range(_asteroidSpawnAngleMin, _asteroidSpawnAngleMax);
 
         switch (selectedBorder.name)
         {
             case "TopBorder":
-                _spwanPositionOffset = new Vector3(0, 0, -_asteroidSpawnPositionOffset);
+                _spawnPositionOffset = new Vector3(0, 0, -BorderOffset);
                 _direction = Vector3.back;
                 _directionOffset = new Vector3(_angleOffset, 0, 0);
                 break;
             case "BottomBorder":
-                _spwanPositionOffset = new Vector3(0, 0, _asteroidSpawnPositionOffset);
+                _spawnPositionOffset = new Vector3(0, 0, BorderOffset);
                 _direction = Vector3.forward;
                 _directionOffset = new Vector3(_angleOffset, 0, 0);
                 break;
             case "LeftBorder":
-                _spwanPositionOffset = new Vector3(_asteroidSpawnPositionOffset, 0, 0);
+                _spawnPositionOffset = new Vector3(BorderOffset, 0, 0);
                 _direction = Vector3.right;
                 _directionOffset = new Vector3(0, 0, _angleOffset);
                 break;
             case "RightBorder":
-                _spwanPositionOffset = new Vector3(-_asteroidSpawnPositionOffset, 0, 0);
+                _spawnPositionOffset = new Vector3(-BorderOffset, 0, 0);
                 _direction = Vector3.left;
                 _directionOffset = new Vector3(0, 0, _angleOffset);
                 break;
         }
         asteroid.InitialDirection = Vector3.Normalize(_direction + _directionOffset);
 
-        return selectedBorder.position + _spwanPositionOffset;
+        return selectedBorder.position + _spawnPositionOffset;
     }
 
     private void InstantiateAsteroid(GameObject asteroid, Vector3 position)
     {
         Instantiate(asteroid, position, Quaternion.identity, AsteroidPool);
+    }
+    #endregion
+
+    public void AddScore(Asteroid asteroid)
+    {
+        _score += asteroid.Data.Score;
+        UpdateScoreText();
+    }
+
+    private void UpdateScoreText()
+    {
+        UIManager.instance.UpdateScoreText(_score);
+    }
+
+    public void PauseGame()
+    {
+        Pause = true;
+        Time.timeScale = 0;
+        _postProcessVolume.profile = PausePostProcess;
+        UIManager.instance.SetPause(Pause);
+    }
+
+    public void ResumeGame()
+    {
+        Pause = false;
+        Time.timeScale = 1;
+        _postProcessVolume.profile = DefaultPostProcess;
+        UIManager.instance.SetPause(Pause);
+    }
+
+    public void GameOver()
+    {
+        GameOverBool = true;
+        SceneManager.instance.LoadMainMenu();
+    }
+
+    #region Utils
+    public Transform GetBorderByName(string name)
+    {
+        foreach(Transform border in Borders)
+        {
+            if (border.name == name)
+                return border;
+        }
+
+        return null;
     }
     #endregion
 }

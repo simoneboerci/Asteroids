@@ -20,6 +20,7 @@ MonoBehaviour:
   Mass: 550000
   Drag: 0
   AngularDrag: 0
+  Life: 3
   MovementSpeed: 12000000
   RotationSpeed: 7000000
   Turrets:

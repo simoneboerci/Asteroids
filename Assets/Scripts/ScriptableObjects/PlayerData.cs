@@ -22,6 +22,7 @@ public class PlayerData : ScriptableObject
     public float AngularDrag = 0;
 
     [Header("Variables")]
+    public int Life = 3;
     public float MovementSpeed = 60;
     public float RotationSpeed = 20;
     public List<Vector3> Turrets;

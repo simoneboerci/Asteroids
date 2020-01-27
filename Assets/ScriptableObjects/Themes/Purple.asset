@@ -1,0 +1,22 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fcc535f34aff818409e1fb87cdbb27fd, type: 3}
+  m_Name: Purple
+  m_EditorClassIdentifier: 
+  MainUiColor: {r: 1, g: 0.8057633, b: 0, a: 1}
+  NormalButtonColor: {r: 1, g: 0, b: 0.9372549, a: 0}
+  HighlightedButtonColor: {r: 1, g: 0, b: 0.9341049, a: 1}
+  PressedButtonColor: {r: 1, g: 1, b: 1, a: 0}
+  SelectedButtonColor: {r: 1, g: 1, b: 1, a: 0}
+  DisabledButtonColor: {r: 1, g: 1, b: 1, a: 0}
+  ColorTransitionSpeed: 0.1
+  DisabledButtonTextOpacity: 0.3

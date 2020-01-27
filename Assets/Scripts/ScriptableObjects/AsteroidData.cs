@@ -27,6 +27,8 @@ public class AsteroidData : ScriptableObject
 
     [Header("Variables")]
     public int Life = 100;
+    public int Damage = 1;
+    public int Score = 10;
     public float MaxMovementSpeed = 10000000;
     public float MaxRotationSpeed = 1000000;
 }

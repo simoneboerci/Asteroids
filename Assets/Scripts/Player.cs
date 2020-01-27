@@ -14,6 +14,8 @@ public class Player : MonoBehaviour
     private int _bulletTypeIndex = 0;
 
     private List<GameObject> _turrets = new List<GameObject>();
+    private bool _canShoot = true;
+    private int _life;
 
     private Rigidbody _rb;
 
@@ -43,6 +45,8 @@ public class Player : MonoBehaviour
         ExtractGraphicsData();
         ExtractColliderData();
         ExtractRigidbodyData();
+
+        _life = Data.Life;
     }
 
     private void ExtractGraphicsData()
@@ -74,6 +78,15 @@ public class Player : MonoBehaviour
 
     #endregion
 
+    private void Update()
+    {
+        if (GameManager.instance.Pause || GameManager.instance.GameOverBool)
+            return;
+
+        if (Input.GetKeyDown(KeyCode.Space) && _canShoot)
+            Shoot();
+    }
+
     #region Update
     private void FixedUpdate()
     {
@@ -82,12 +95,9 @@ public class Player : MonoBehaviour
 
         Move(_vertical);
         Rotate(_horizontal);
-
-        if (Input.GetKeyDown(KeyCode.Space))
-            Shoot();
     }
-    #endregion
 
+    #region Locomotion
     private void Move(float force)
     {
         _rb.AddRelativeForce(Vector3.forward * Data.MovementSpeed * force * Time.fixedDeltaTime);
@@ -97,13 +107,47 @@ public class Player : MonoBehaviour
     {
         _rb.AddTorque(Vector3.up * Data.RotationSpeed * force * Time.fixedDeltaTime);
     }
+    #endregion
 
     private void Shoot()
     {
-        foreach (GameObject turret in _turrets) {
+        _canShoot = false;
+
+        foreach (GameObject turret in _turrets)
+        {
             GameObject _bullet = BulletPrefab;
             _bullet.GetComponent<Bullet>().Data = GameManager.instance.BulletDataList[_bulletTypeIndex];
             Instantiate(_bullet, turret.transform.position, turret.transform.rotation);
         }
+
+        _canShoot = true;
     }
+    #endregion
+
+    private void OnCollisionEnter(Collision collision)
+    {
+        if (collision.gameObject.CompareTag("Asteroid"))
+        {
+            int _damage = collision.gameObject.GetComponent<Asteroid>().Data.Damage;
+            if (_life - _damage > 0)
+            {
+                _life -= _damage;                    
+            }
+            else
+            {
+                Die();
+                GameManager.instance.GameOver();
+            }
+            UIManager.instance.DecreaseLife(_damage);
+        }
+    }
+
+    private void Die()
+    {
+        Destroy(this.gameObject);
+    }
+
+    #region Getters
+    public int GetCurrentLife() => _life;
+    #endregion
 }

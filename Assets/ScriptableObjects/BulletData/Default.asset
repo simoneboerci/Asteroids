@@ -20,5 +20,5 @@ MonoBehaviour:
   ColliderHeight: 1
   ColliderDirection: 1
   Mass: 15
-  Damage: 20
+  Damage: 100
   MovementSpeed: 2000

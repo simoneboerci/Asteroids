@@ -69,7 +69,8 @@ public class Bullet : MonoBehaviour
 
     private void OnCollisionEnter(Collision collision)
     {
-        Die();
+        if (!collision.gameObject.CompareTag("Bullet"))
+            Die();
     }
 
     private void Die()

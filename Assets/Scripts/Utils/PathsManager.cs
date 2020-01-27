@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class PathsManager
 {
-    private const string SOPath = "ScriptableObjects";
+    public const string SOPath = "ScriptableObjects";
 
-    public const string SODataPath = SOPath + "Data";
+    public const string SODataPath = SOPath + "/Data";
 }
