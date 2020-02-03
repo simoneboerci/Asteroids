@@ -87,20 +87,20 @@ public class Asteroid : MonoBehaviour
 
     private void OnCollisionEnter(Collision collision)
     {
-        if (collision.gameObject.CompareTag("Bullet"))
-        {
+        if (collision.gameObject.CompareTag("Bullet")) {
             int _damage = collision.gameObject.GetComponent<Bullet>().Data.Damage;
             if (_life - _damage > 0)
             {
                 _life -= _damage;
                 transform.localScale /= 2f;
-                SpawnMiniAsteroid(_damage); 
+                SpawnMiniAsteroid(_damage);
             }
             else
             {
                 GameManager.instance.AddScore(this);
                 Die();
             }
+
         }
     }
 

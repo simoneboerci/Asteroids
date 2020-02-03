@@ -185,6 +185,7 @@ public class GameManager : MonoBehaviour
     public void GameOver()
     {
         GameOverBool = true;
+        SoundManager.instance.Stop();
         SceneManager.instance.LoadMainMenu();
     }
 
